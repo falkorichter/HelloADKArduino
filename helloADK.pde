@@ -5,13 +5,13 @@
 #include <Usb.h>
 #include <AndroidAccessory.h>
 
-#define  LED_RED       12
+#define  LED       13
 
-AndroidAccessory acc("Google, Inc.",
-		     "DemoKit",
-		     "DemoKit Arduino Board",
+AndroidAccessory acc("3D Robotics",
+		     "PhoneDrone",
+		     "Phone Drone ADK Board",
 		     "1.0",
-		     "http://www.android.com",
+		     "https://groups.google.com/forum/?fromgroups#!forum/phone-drone-adk",
 		     "0000000012345678");
 void setup();
 void loop();
@@ -19,8 +19,8 @@ void loop();
 
 void init_leds()
 {
-	digitalWrite(LED_RED, 1);
-	pinMode(LED_RED, OUTPUT);
+	digitalWrite(LED, 1);
+	pinMode(LED, OUTPUT);
 }
 
 void setup()
@@ -50,8 +50,16 @@ void loop()
 		if (len > 0) {
 			// assumes only one command per packet
 			if (msg[0] == 0x2) {
-				if (msg[1] == 0x0)
-					analogWrite(LED_RED, 255 - msg[2]);
+				if (msg[1] == 0x0){
+                                  Serial.print(msg[2],DEC); Serial.print(" ");
+                                  int value = msg[2];
+                                  if  (value > 128){
+			            digitalWrite(13, HIGH);
+                                  }
+                                   else{
+                                    digitalWrite(13, LOW);
+                                   }
+                                 }
 				
 			} 
 		}
@@ -59,7 +67,7 @@ void loop()
 		
 	} else {
 		// reset outputs to default values on disconnect
-		analogWrite(LED_RED, 255);
+		digitalWrite(13, LOW);
 	}
 	delay(10);
 }
